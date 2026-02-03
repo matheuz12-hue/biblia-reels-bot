@@ -1,0 +1,31 @@
+name: Post Bible Reel
+
+on:
+  schedule:
+    - cron: "0 12 * * *"
+    - cron: "0 20 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install deps
+        run: |
+          pip install -r requirements.txt
+
+      - name: Publish Reel
+        env:
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          MP4_URL: ${{ secrets.MP4_URL }}
+        run: |
+          python scripts/publish_reel.py
